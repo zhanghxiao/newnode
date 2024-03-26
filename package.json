@@ -1,0 +1,22 @@
+{
+  "name": "chatgpt-api-demo",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "tsnd server.ts"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^20.11.14"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.1",
+    "express": "^4.19.2",
+    "openai": "^4.26.0",
+    "ts-node-dev": "^2.0.0"
+  },
+  "keywords": [],
+  "description": ""
+}

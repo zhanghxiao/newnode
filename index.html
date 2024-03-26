@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot UI</title>
+    <style>
+        /* 基本样式 */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            background-color: #8ED1FC;
+            color: #333;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            height: 100%;
+        }
+
+        /* 侧边栏样式 */
+        .sidebar {
+            background-color: rgba(255, 255, 255, 0.5);
+            color: #333;
+            padding: 20px;
+            transition: width 0.3s ease;
+        }
+
+        .sidebar.collapsed {
+            width: 60px;
+        }
+
+        .sidebar img {
+            width: 100px;
+        }
+
+        .sidebar nav {
+            margin-top: 20px;
+        }
+
+        .sidebar nav a {
+            display: flex;
+            align-items: center;
+            color: #333;
+            padding: 10px;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            opacity: 0.7;
+        }
+
+        .sidebar nav a:hover,
+        .sidebar nav a.active {
+            background-color: #fff;
+            color: #333;
+            opacity: 1;
+        }
+
+        .sidebar nav a span {
+            margin-left: 10px;
+        }
+
+        .sidebar.collapsed nav a span {
+            display: none;
+        }
+
+        /* 主体区域样式 */
+        .main {
+            display: grid;
+            grid-template-rows: 1fr auto;
+            padding: 20px;
+        }
+
+        /* 聊天窗口样式 */
+        .chat-windows {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .chat-window {
+            background-color: #fff;
+            border-radius: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .chat-header {
+            background-color: rgba(255, 255, 255, 0.5);
+            color: #555;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .chat-header select {
+            background-color: rgba(255, 255, 255, 0.5);
+            color: #555;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 10px;
+        }
+
+        .chat-body {
+            padding: 10px;
+            height: 400px;
+            overflow-y: scroll;
+            color: #333;
+        }
+
+        /* 布局切换按钮样式
+/* 布局切换按钮样式 */
+.layout-buttons {
+    display: flex;
+    margin-right: 5px;
+}
+
+.layout-buttons button {
+    background-color: #fff; /* 纯白色背景 */
+    border: none;
+    border-radius: 5px; /* 边角圆润度设置为5px */
+    cursor: pointer;
+    padding: 5px 5px;
+    margin-right: 5px;
+    opacity: 0.5;
+    transition: opacity 0.3s;
+}
+
+.layout-buttons button:hover,
+.layout-buttons button.active {
+    opacity: 1;
+}
+
+.layout-buttons button svg {
+    width: 32px;
+    height: 32px;
+}
+
+
+/* 输入框样式 */
+.input-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #fff;
+    border-radius: 15px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+}
+
+
+
+        .input-container input {
+            flex-grow: 1;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            margin-left: 10px;
+        }
+
+        .input-button {
+            margin-left: 10px;
+            padding: 5px 10px;
+            background-color: #87cefa;
+            color: #fff;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .chat-windows {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+         /* 消息气泡样式 */
+.message {
+  padding: 10px;
+  border-radius: 10px;
+  max-width: 70%;
+  margin-bottom: 10px;
+}
+
+.user-message {
+  background-color: #87cefa;
+  color: #fff;
+  margin-left: auto;
+}
+
+.assistant-message {
+  background-color: #f0f8ff;
+  color: #333;
+  margin-right: auto;
+}
+
+.loading-message {
+  background-color: #f0f8ff;
+  color: #333;
+  margin-right: auto;
+  opacity: 0.5;
+}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+           <svg width="52" height="52" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M13.0001 4.87499C11.5202 4.87499 10.0751 6.32915 10.0751 8.44999C10.0751 10.5708 11.5202 12.025 13.0001 12.025C13.5386 12.025 13.9751 12.4615 13.9751 13C13.9751 13.5385 13.5386 13.975 13.0001 13.975C10.1721 13.975 8.12508 11.3549 8.12508 8.44999C8.12508 5.54503 10.1721 2.92499 13.0001 2.92499C13.5386 2.92499 13.9751 3.36151 13.9751 3.89999C13.9751 4.43847 13.5386 4.87499 13.0001 4.87499Z" fill="url(#paint0_angular_513_633)"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M7.25469 7.25476C6.20828 8.30116 6.21465 10.3513 7.7143 11.8509C9.21396 13.3506 11.2641 13.357 12.3105 12.3106C12.6913 11.9298 13.3086 11.9298 13.6894 12.3106C14.0701 12.6913 14.0701 13.3087 13.6894 13.6894C11.6897 15.6891 8.38956 15.2839 6.33545 13.2298C4.28133 11.1757 3.87615 7.87558 5.87583 5.8759C6.25659 5.49514 6.87392 5.49514 7.25469 5.8759C7.63545 6.25666 7.63545 6.87399 7.25469 7.25476Z" fill="url(#paint1_angular_513_633)"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M4.87499 13C4.87499 14.4799 6.32915 15.925 8.44999 15.925C10.5708 15.925 12.025 14.4798 12.025 13C12.025 12.4615 12.4616 12.025 13.0001 12.025C13.5386 12.025 13.9751 12.4615 13.9751 13C13.9751 15.828 11.3549 17.875 8.44999 17.875C5.54503 17.875 2.92499 15.828 2.92499 13C2.92499 12.4615 3.36151 12.025 3.89999 12.025C4.43847 12.025 4.87499 12.4615 4.87499 13Z" fill="url(#paint2_angular_513_633)"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M7.25479 18.7452C8.30119 19.7916 10.3513 19.7853 11.851 18.2856C13.3506 16.786 13.357 14.7358 12.3106 13.6894C11.9298 13.3087 11.9297 12.6913 12.3105 12.3106C12.6913 11.9298 13.3086 11.9298 13.6894 12.3106C15.689 14.3103 15.284 17.6104 13.2298 19.6645C11.1757 21.7186 7.87561 22.1238 5.87593 20.1241C5.49517 19.7433 5.49517 19.126 5.87593 18.7452C6.25669 18.3645 6.87402 18.3645 7.25479 18.7452Z" fill="url(#paint3_angular_513_633)"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M13 21.125C14.4798 21.125 15.925 19.6708 15.925 17.55C15.925 15.4292 14.4799 13.975 13.0001 13.975C12.4616 13.975 12.025 13.5385 12.025 13C12.025 12.4615 12.4616 12.025 13.0001 12.025C15.8281 12.025 17.875 14.645 17.875 17.55C17.875 20.455 15.828 23.075 13 23.075C12.4615 23.075 12.025 22.6385 12.025 22.1C12.025 21.5615 12.4615 21.125 13 21.125Z" fill="url(#paint4_angular_513_633)"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M18.7454 18.7452C19.7918 17.6988 19.7854 15.6487 18.2857 14.149C16.7861 12.6494 14.7358 12.643 13.6894 13.6894C13.3086 14.0702 12.6914 14.0702 12.3106 13.6894C11.9298 13.3087 11.9297 12.6913 12.3105 12.3106C14.3102 10.3109 17.6105 10.7161 19.6646 12.7702C21.7187 14.8243 22.1239 18.1244 20.1242 20.1241C19.7435 20.5049 19.1261 20.5049 18.7454 20.1241C18.3646 19.7433 18.3646 19.126 18.7454 18.7452Z" fill="url(#paint5_angular_513_633)"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M21.1251 13C21.1251 11.5201 19.6709 10.075 17.5501 10.075C15.4292 10.075 13.9751 11.5201 13.9751 13C13.9751 13.5385 13.5386 13.975 13.0001 13.975C12.4616 13.975 12.025 13.5385 12.025 13C12.025 10.172 14.6451 8.12498 17.5501 8.12498C20.455 8.12498 23.0751 10.172 23.0751 13C23.0751 13.5385 22.6385 13.975 22.1001 13.975C21.5616 13.975 21.1251 13.5385 21.1251 13Z" fill="url(#paint6_angular_513_633)"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M18.7453 7.25475C17.6989 6.20835 15.6487 6.21471 14.1491 7.71437C12.6494 9.21403 12.643 11.2642 13.6894 12.3106C14.0701 12.6913 14.0701 13.3087 13.6894 13.6894C13.3086 14.0702 12.6914 14.0702 12.3106 13.6894C10.3109 11.6897 10.7161 8.38963 12.7702 6.33552C14.8243 4.2814 18.1244 3.87621 20.1241 5.8759C20.5049 6.25666 20.5049 6.87399 20.1241 7.25475C19.7434 7.63552 19.126 7.63552 18.7453 7.25475Z" fill="url(#paint7_angular_513_633)"/>
+<defs>
+<radialGradient id="paint0_angular_513_633" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(13 13) rotate(107.65) scale(11.5434 11.5434)">
+<stop offset="0.22998" stop-color="#66E3FF"/>
+<stop offset="0.565055" stop-color="#4987FC"/>
+<stop offset="0.895949" stop-color="#224994"/>
+</radialGradient>
+<radialGradient id="paint1_angular_513_633" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(13 13) rotate(107.65) scale(11.5434 11.5434)">
+<stop offset="0.22998" stop-color="#66E3FF"/>
+<stop offset="0.565055" stop-color="#4987FC"/>
+<stop offset="0.895949" stop-color="#224994"/>
+</radialGradient>
+<radialGradient id="paint2_angular_513_633" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(13 13) rotate(107.65) scale(11.5434 11.5434)">
+<stop offset="0.22998" stop-color="#66E3FF"/>
+<stop offset="0.565055" stop-color="#4987FC"/>
+<stop offset="0.895949" stop-color="#224994"/>
+</radialGradient>
+<radialGradient id="paint3_angular_513_633" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(13 13) rotate(107.65) scale(11.5434 11.5434)">
+<stop offset="0.22998" stop-color="#66E3FF"/>
+<stop offset="0.565055" stop-color="#4987FC"/>
+<stop offset="0.895949" stop-color="#224994"/>
+</radialGradient>
+<radialGradient id="paint4_angular_513_633" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(13 13) rotate(107.65) scale(11.5434 11.5434)">
+<stop offset="0.22998" stop-color="#66E3FF"/>
+<stop offset="0.565055" stop-color="#4987FC"/>
+<stop offset="0.895949" stop-color="#224994"/>
+</radialGradient>
+<radialGradient id="paint5_angular_513_633" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(13 13) rotate(107.65) scale(11.5434 11.5434)">
+<stop offset="0.22998" stop-color="#66E3FF"/>
+<stop offset="0.565055" stop-color="#4987FC"/>
+<stop offset="0.895949" stop-color="#224994"/>
+</radialGradient>
+<radialGradient id="paint6_angular_513_633" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(13 13) rotate(107.65) scale(11.5434 11.5434)">
+<stop offset="0.22998" stop-color="#66E3FF"/>
+<stop offset="0.565055" stop-color="#4987FC"/>
+<stop offset="0.895949" stop-color="#224994"/>
+</radialGradient>
+<radialGradient id="paint7_angular_513_633" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(13 13) rotate(107.65) scale(11.5434 11.5434)">
+<stop offset="0.22998" stop-color="#66E3FF"/>
+<stop offset="0.565055" stop-color="#4987FC"/>
+<stop offset="0.895949" stop-color="#224994"/>
+</radialGradient>
+</defs>
+</svg>
+
+            <nav>
+                <a href="#" class="active" data-mode="all-in-one">
+                    <i class="fas fa-icons"></i>
+                    <span>All-In-One</span>
+                </a>
+                <a href="#" data-mode="gpt-3.5-turbo-0125">
+                    <i class="fas fa-robot"></i>
+                    <span>gpt-3.5-turbo-0125</span>
+                </a>
+                <a href="#" data-mode="讯飞星火v3.5">
+                    <i class="fas fa-fire"></i>
+                    <span>讯飞星火v3.5</span>
+                </a>
+                <a href="#" data-mode="谷歌Gemini-pro">
+                    <i class="fab fa-google"></i>
+                    <span>谷歌Gemini-pro</span>
+                </a>
+                <a href="#" data-mode="通义千问-plus">
+                    <i class="fas fa-question"></i>
+                    <span>通义千问-plus</span>
+                </a>
+                <a href="#" data-mode="gpt-4-turbo-preview">
+                    <i class="fas fa-rocket"></i>
+                    <span>gpt-4-turbo-preview</span>
+                </a>
+            </nav>
+            <button id="sidebar-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+        <div class="main">
+            <div class="chat-windows">
+                <!-- 聊天窗口将在这里动态生成 -->
+            </div>
+        <div class="input-container">
+        <div class="layout-buttons">
+            <button data-layout="2" class="active">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="3" y="4" width="14" height="12" rx="2" stroke="#BDBDBD" stroke-width="1.5"/>
+                    <line x1="10" y1="4" x2="10" y2="16" stroke="#BDBDBD" stroke-width="1.5"/>
+                </svg>
+            </button>
+            <button data-layout="3">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="3" y="4" width="14" height="12" rx="2" stroke="#BDBDBD" stroke-width="1.5"/>
+                    <line x1="7.5" y1="4" x2="7.5" y2="16" stroke="#BDBDBD" stroke-width="1.5"/>
+                    <line x1="12.5" y1="4" x2="12.5" y2="16" stroke="#BDBDBD" stroke-width="1.5"/>
+                </svg>
+            </button>
+            <button data-layout="4">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="3" y="4" width="14" height="12" rx="2" stroke="#BDBDBD" stroke-width="1.5"/>
+                    <line x1="10" y1="4" x2="10" y2="16" stroke="#BDBDBD" stroke-width="1.5"/>
+                    <line x1="3" y1="10" x2="17" y2="10" stroke="#BDBDBD" stroke-width="1.5"/>
+                </svg>
+            </button>
+        </div>
+        <input type="text" placeholder="Type your message..." id="user-input">
+        <button id="send-button" class="input-button">发送</button>
+    </div>
+</div>
+        </div>
+    </div>
+
+    <script>
+        // 获取DOM元素
+        const sidebarLinks = document.querySelectorAll('.sidebar nav a');
+        const chatWindows = document.querySelector('.chat-windows');
+        const layoutButtons = document.querySelectorAll('.layout-buttons button');
+        const userInput = document.getElementById('user-input');
+        const sendButton = document.getElementById('send-button');
+        const sidebar = document.querySelector('.sidebar');
+        const sidebarToggle = document.getElementById('sidebar-toggle');
+
+       // 创建聊天窗口函数
+        function createChatWindow(models) {
+    const chatWindow = document.createElement('div');
+    chatWindow.classList.add('chat-window');
+
+    const chatHeader = document.createElement('div');
+    chatHeader.classList.add('chat-header');
+    const select = document.createElement('select');
+models.forEach(model => {
+    console.log('Model before trim:', model);
+    console.log('Sidebar link textContent before trim:', sidebarLinks[0].textContent);
+
+    model = model.trim();
+    let sidebarText = sidebarLinks[0].textContent.trim();
+
+    console.log('Model after trim:', model);
+    console.log('Sidebar link textContent after trim:', sidebarText);
+
+    if (model !== sidebarText) {
+        const option = document.createElement('option');
+        option.value = model;
+        option.textContent = model;
+        select.appendChild(option);
+    }
+});
+
+
+    chatHeader.appendChild(select);
+
+    const chatBody = document.createElement('div');
+    chatBody.classList.add('chat-body');
+
+    chatWindow.appendChild(chatHeader);
+    chatWindow.appendChild(chatBody);
+
+    return chatWindow;
+}
+
+
+        // 切换布局函数
+        function toggleLayout(layout) {
+            chatWindows.innerHTML = '';
+            layoutButtons.forEach(btn => btn.classList.remove('active'));
+            const activeBtn = document.querySelector(`.layout-buttons button[data-layout="${layout}"]`);
+            activeBtn.classList.add('active');
+
+            let columns;
+            if (layout === 2 || layout === 3) {
+                columns = '1fr '.repeat(layout);
+            } else if (layout === 4) {
+                columns = '1fr 1fr';
+            }
+            chatWindows.style.gridTemplateColumns = columns;
+
+            const models = Array.from(sidebarLinks).map(link => link.textContent);
+
+            for (let i = 0; i < layout; i++) {
+                const chatWindow = createChatWindow(models);
+                chatWindows.appendChild(chatWindow);
+            }
+        }
+
+        // 初始化布局为 all-in-one 模式
+        toggleLayout(2);
+
+        // 监听侧边栏链接点击事件
+        sidebarLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const mode = e.target.dataset.mode;
+                sidebarLinks.forEach(link => link.classList.remove('active'));
+                e.target.classList.add('active');
+
+                if (mode === 'all-in-one') {
+                    layoutButtons.forEach(btn => btn.style.display = 'inline-block');
+                    toggleLayout(2);
+                } else {
+                    layoutButtons.forEach(btn => btn.style.display = 'none');
+                    chatWindows.innerHTML = '';
+                    const chatWindow = createChatWindow([e.target.textContent]);
+                    chatWindows.appendChild(chatWindow);
+                }
+            });
+        });
+
+        // 监听布局切换按钮点击事件
+        layoutButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const layout = parseInt(btn.dataset.layout, 10);
+                toggleLayout(layout);
+            });
+        });
+
+// 监听发送按钮点击事件
+sendButton.addEventListener('click', () => {
+    const userMessage = userInput.value.trim();
+    if (userMessage) {
+        // 获取所有聊天窗口的选中模型
+        const selectedModels = Array.from(document.querySelectorAll('.chat-window .chat-header select')).map(select => select.value);
+        console.log('Selected models:', selectedModels);
+
+        // 在聊天窗口中显示用户输入的消息气泡
+        const chatWindows = document.querySelectorAll('.chat-window .chat-body');
+        chatWindows.forEach(chatBody => {
+            const userMessageElement = document.createElement('div');
+            userMessageElement.classList.add('message', 'user-message');
+            userMessageElement.textContent = userMessage;
+            chatBody.appendChild(userMessageElement);
+        });
+
+        // 在聊天窗口中显示 "Loading..." 消息
+        const loadingMessageElements = Array.from(document.querySelectorAll('.chat-window .chat-body')).map(chatBody => {
+            const loadingMessage = document.createElement('div');
+            loadingMessage.classList.add('message', 'loading-message');
+            loadingMessage.textContent = 'Loading...';
+            chatBody.appendChild(loadingMessage);
+            return loadingMessage;
+        });
+
+        // 发送请求到后端并获取响应
+        fetch('/chat', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ userMessage, selectedModels })
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Received response:', data);
+            // 将后端返回的响应逐个字符更新到对应的聊天窗口中
+            const chatWindows = document.querySelectorAll('.chat-window .chat-body');
+            chatWindows.forEach((chatBody, index) => {
+                const response = data.responses[index];
+                const assistantMessageElement = document.createElement('div');
+                assistantMessageElement.classList.add('message', 'assistant-message');
+                chatBody.appendChild(assistantMessageElement);
+
+                // 逐个字符添加文本，实现打字机效果
+                let i = 0;
+                const typingInterval = setInterval(() => {
+                    if (i < response.length) {
+                        assistantMessageElement.textContent += response[i];
+                        i++;
+                    } else {
+                        clearInterval(typingInterval);
+                    }
+                },25); // 设置间隔时间为25毫秒
+
+                // 移除 "Loading..." 消息
+                const loadingMessage = loadingMessageElements[index];
+                chatBody.removeChild(loadingMessage);
+            });
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+
+        userInput.value = '';
+    }
+});
+
+        // 监听侧边栏收起/展开按钮点击事件
+        sidebarToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('collapsed');
+        });
+
+        userInput.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                sendButton.click();
+            }
+        });
+   </script>
+</body>
+</html>
