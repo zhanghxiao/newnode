@@ -109,7 +109,7 @@
 
 
 .chat-body {
-    padding: 10px;
+  padding: 10px;
     overflow-y: auto;
     color: #333;
     flex-grow: 1;
@@ -213,6 +213,7 @@
 <body>
     <div class="container">
         <div class="sidebar">
+
            <svg width="52" height="52" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path fill-rule="evenodd" clip-rule="evenodd" d="M13.0001 4.87499C11.5202 4.87499 10.0751 6.32915 10.0751 8.44999C10.0751 10.5708 11.5202 12.025 13.0001 12.025C13.5386 12.025 13.9751 12.4615 13.9751 13C13.9751 13.5385 13.5386 13.975 13.0001 13.975C10.1721 13.975 8.12508 11.3549 8.12508 8.44999C8.12508 5.54503 10.1721 2.92499 13.0001 2.92499C13.5386 2.92499 13.9751 3.36151 13.9751 3.89999C13.9751 4.43847 13.5386 4.87499 13.0001 4.87499Z" fill="url(#paint0_angular_513_633)"/>
 <path fill-rule="evenodd" clip-rule="evenodd" d="M7.25469 7.25476C6.20828 8.30116 6.21465 10.3513 7.7143 11.8509C9.21396 13.3506 11.2641 13.357 12.3105 12.3106C12.6913 11.9298 13.3086 11.9298 13.6894 12.3106C14.0701 12.6913 14.0701 13.3087 13.6894 13.6894C11.6897 15.6891 8.38956 15.2839 6.33545 13.2298C4.28133 11.1757 3.87615 7.87558 5.87583 5.8759C6.25659 5.49514 6.87392 5.49514 7.25469 5.8759C7.63545 6.25666 7.63545 6.87399 7.25469 7.25476Z" fill="url(#paint1_angular_513_633)"/>
@@ -379,28 +380,40 @@ models.forEach(model => {
 }
 
 
-        // 切换布局函数
-        function toggleLayout(layout) {
-            chatWindows.innerHTML = '';
-            layoutButtons.forEach(btn => btn.classList.remove('active'));
-            const activeBtn = document.querySelector(`.layout-buttons button[data-layout="${layout}"]`);
-            activeBtn.classList.add('active');
+       function toggleLayout(layout) {
+    chatWindows.innerHTML = '';
+    layoutButtons.forEach(btn => btn.classList.remove('active'));
+    const activeBtn = document.querySelector(`.layout-buttons button[data-layout="${layout}"]`);
+    activeBtn.classList.add('active');
 
-            let columns;
-            if (layout === 2 || layout === 3) {
-                columns = '1fr '.repeat(layout);
-            } else if (layout === 4) {
-                columns = '1fr 1fr';
-            }
-            chatWindows.style.gridTemplateColumns = columns;
+    let columns;
+    if (layout === 2 || layout === 3) {
+        columns = '1fr '.repeat(layout);
+    } else if (layout === 4) {
+        columns = '1fr 1fr';
+    }
+    chatWindows.style.gridTemplateColumns = columns;
 
-            const models = Array.from(sidebarLinks).map(link => link.textContent);
+    const models = Array.from(sidebarLinks).map(link => link.textContent);
 
-            for (let i = 0; i < layout; i++) {
-                const chatWindow = createChatWindow(models);
-                chatWindows.appendChild(chatWindow);
-            }
-        }
+    for (let i = 0; i < layout; i++) {
+        const chatWindow = createChatWindow(models);
+        chatWindows.appendChild(chatWindow);
+    }
+
+    // 根据布局方式添加不同的样式规则
+    if (layout === 4) {
+        const chatBodies = chatWindows.querySelectorAll('.chat-body');
+        chatBodies.forEach(chatBody => {
+            chatBody.style.maxHeight = '23.6vh';
+        });
+    } else {
+        const chatBodies = chatWindows.querySelectorAll('.chat-body');
+        chatBodies.forEach(chatBody => {
+            chatBody.style.maxHeight = '65vh';
+        });
+    }
+}
 
         // 初始化布局为 all-in-one 模式
         toggleLayout(2);
@@ -421,7 +434,11 @@ sidebarLinks.forEach(link => {
             chatWindows.innerHTML = '';
             const chatWindow = createChatWindow([e.target.textContent]);
             chatWindows.appendChild(chatWindow);
-            chatWindows.style.gridTemplateColumns = '1fr';  // 添加这行代码
+            chatWindows.style.gridTemplateColumns = '1fr';
+
+            // 设置单一模型模式下的聊天窗口最大高度
+            const chatBody = chatWindows.querySelector('.chat-body');
+            chatBody.style.maxHeight = '65vh';
         }
     });
 });
@@ -450,6 +467,8 @@ sendButton.addEventListener('click', () => {
             userMessageElement.classList.add('message', 'user-message');
             userMessageElement.textContent = userMessage;
             chatBody.appendChild(userMessageElement);
+// 自动滚动到底部
+    chatBody.scrollTop = chatBody.scrollHeight;
         });
 
         // 在聊天窗口中显示 "Loading..." 消息
@@ -494,6 +513,8 @@ sendButton.addEventListener('click', () => {
                 // 移除 "Loading..." 消息
                 const loadingMessage = loadingMessageElements[index];
                 chatBody.removeChild(loadingMessage);
+ // 自动滚动到底部
+        chatBody.scrollTop = chatBody.scrollHeight;
             });
         })
         .catch(error => {
@@ -514,6 +535,7 @@ sendButton.addEventListener('click', () => {
                 sendButton.click();
             }
         });
+
    </script>
 </body>
 </html>
