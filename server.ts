@@ -5,7 +5,7 @@ import { createReadStream } from 'fs';
 
 const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
-    baseURL: "https://one-api-1-lkn3.onrender.com/v1",
+    baseURL: process.env.OPENAI_BASE_URL,
 });
 
 const port = 3001;
