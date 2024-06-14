@@ -33,10 +33,6 @@
             width: 60px;
         }
 
-        .sidebar img {
-            width: 100px;
-        }
-
         .sidebar nav {
             margin-top: 20px;
         }
@@ -107,55 +103,50 @@
             border-radius: 10px;
         }
 
+        .chat-body {
+            padding: 10px;
+            overflow-y: auto;
+            color: #333;
+            flex-grow: 1;
+        }
 
-.chat-body {
-  padding: 10px;
-    overflow-y: auto;
-    color: #333;
-    flex-grow: 1;
-}
+        /* 布局切换按钮样式 */
+        .layout-buttons {
+            display: flex;
+            margin-right: 5px;
+        }
 
+        .layout-buttons button {
+            background-color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            padding: 5px 5px;
+            margin-right: 5px;
+            opacity: 0.5;
+            transition: opacity 0.3s;
+        }
 
-/* 布局切换按钮样式 */
-.layout-buttons {
-    display: flex;
-    margin-right: 5px;
-}
+        .layout-buttons button:hover,
+        .layout-buttons button.active {
+            opacity: 1;
+        }
 
-.layout-buttons button {
-    background-color: #fff; /* 纯白色背景 */
-    border: none;
-    border-radius: 5px; /* 边角圆润度设置为5px */
-    cursor: pointer;
-    padding: 5px 5px;
-    margin-right: 5px;
-    opacity: 0.5;
-    transition: opacity 0.3s;
-}
+        .layout-buttons button svg {
+            width: 32px;
+            height: 32px;
+        }
 
-.layout-buttons button:hover,
-.layout-buttons button.active {
-    opacity: 1;
-}
-
-.layout-buttons button svg {
-    width: 32px;
-    height: 32px;
-}
-
-
-/* 输入框样式 */
-.input-container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background-color: #fff;
-    border-radius: 15px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    padding: 10px;
-}
-
-
+        /* 输入框样式 */
+        .input-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #fff;
+            border-radius: 15px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 10px;
+        }
 
         .input-container input {
             flex-grow: 1;
@@ -182,39 +173,40 @@
             margin-bottom: 20px;
         }
 
-         /* 消息气泡样式 */
-.message {
-  padding: 10px;
-  border-radius: 10px;
-  max-width: 70%;
-  margin-bottom: 10px;
-}
+        /* 消息气泡样式 */
+        .message {
+            padding: 10px;
+            border-radius: 10px;
+            max-width: 70%;
+            margin-bottom: 10px;
+        }
 
-.user-message {
-  background-color: #87cefa;
-  color: #fff;
-  margin-left: auto;
-}
+        .user-message {
+            background-color: #87cefa;
+            color: #fff;
+            margin-left: auto;
+        }
 
-.assistant-message {
-  background-color: #f0f8ff;
-  color: #333;
-  margin-right: auto;
-}
+        .assistant-message {
+            background-color: #f0f8ff;
+            color: #333;
+            margin-right: auto;
+        }
 
-.loading-message {
-  background-color: #f0f8ff;
-  color: #333;
-  margin-right: auto;
-  opacity: 0.5;
-}
+        .loading-message {
+            background-color: #f0f8ff;
+            color: #333;
+            margin-right: auto;
+            opacity: 0.5;
+        }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
     <div class="container">
-        <div class="sidebar">
-
+         <div class="sidebar">
            <svg width="52" height="52" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+
 <path fill-rule="evenodd" clip-rule="evenodd" d="M13.0001 4.87499C11.5202 4.87499 10.0751 6.32915 10.0751 8.44999C10.0751 10.5708 11.5202 12.025 13.0001 12.025C13.5386 12.025 13.9751 12.4615 13.9751 13C13.9751 13.5385 13.5386 13.975 13.0001 13.975C10.1721 13.975 8.12508 11.3549 8.12508 8.44999C8.12508 5.54503 10.1721 2.92499 13.0001 2.92499C13.5386 2.92499 13.9751 3.36151 13.9751 3.89999C13.9751 4.43847 13.5386 4.87499 13.0001 4.87499Z" fill="url(#paint0_angular_513_633)"/>
 <path fill-rule="evenodd" clip-rule="evenodd" d="M7.25469 7.25476C6.20828 8.30116 6.21465 10.3513 7.7143 11.8509C9.21396 13.3506 11.2641 13.357 12.3105 12.3106C12.6913 11.9298 13.3086 11.9298 13.6894 12.3106C14.0701 12.6913 14.0701 13.3087 13.6894 13.6894C11.6897 15.6891 8.38956 15.2839 6.33545 13.2298C4.28133 11.1757 3.87615 7.87558 5.87583 5.8759C6.25659 5.49514 6.87392 5.49514 7.25469 5.8759C7.63545 6.25666 7.63545 6.87399 7.25469 7.25476Z" fill="url(#paint1_angular_513_633)"/>
 <path fill-rule="evenodd" clip-rule="evenodd" d="M4.87499 13C4.87499 14.4799 6.32915 15.925 8.44999 15.925C10.5708 15.925 12.025 14.4798 12.025 13C12.025 12.4615 12.4616 12.025 13.0001 12.025C13.5386 12.025 13.9751 12.4615 13.9751 13C13.9751 15.828 11.3549 17.875 8.44999 17.875C5.54503 17.875 2.92499 15.828 2.92499 13C2.92499 12.4615 3.36151 12.025 3.89999 12.025C4.43847 12.025 4.87499 12.4615 4.87499 13Z" fill="url(#paint2_angular_513_633)"/>
@@ -267,30 +259,9 @@
 </defs>
 </svg>
 
-            <nav>
+            <nav id="model-list">
                 <a href="#" class="active" data-mode="all-in-one">
-                    <i class="fas fa-icons"></i>
                     <span>All-In-One</span>
-                </a>
-                <a href="#" data-mode="gpt-3.5-turbo-0125">
-                    <i class="fas fa-robot"></i>
-                    <span>gpt-3.5-turbo-0125</span>
-                </a>
-                <a href="#" data-mode="讯飞星火v3.5">
-                    <i class="fas fa-fire"></i>
-                    <span>讯飞星火v3.5</span>
-                </a>
-                <a href="#" data-mode="谷歌Gemini-pro">
-                    <i class="fab fa-google"></i>
-                    <span>谷歌Gemini-pro</span>
-                </a>
-                <a href="#" data-mode="通义千问-plus">
-                    <i class="fas fa-question"></i>
-                    <span>通义千问-plus</span>
-                </a>
-                <a href="#" data-mode="gpt-4-turbo-preview(copilot)">
-                    <i class="fas fa-rocket"></i>
-                    <span>gpt-4-turbo-preview(copilot)</span>
                 </a>
             </nav>
             <button id="sidebar-toggle">
@@ -301,39 +272,37 @@
             <div class="chat-windows">
                 <!-- 聊天窗口将在这里动态生成 -->
             </div>
-        <div class="input-container">
-        <div class="layout-buttons">
-            <button data-layout="2" class="active">
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect x="3" y="4" width="14" height="12" rx="2" stroke="#BDBDBD" stroke-width="1.5"/>
-                    <line x1="10" y1="4" x2="10" y2="16" stroke="#BDBDBD" stroke-width="1.5"/>
-                </svg>
-            </button>
-            <button data-layout="3">
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect x="3" y="4" width="14" height="12" rx="2" stroke="#BDBDBD" stroke-width="1.5"/>
-                    <line x1="7.5" y1="4" x2="7.5" y2="16" stroke="#BDBDBD" stroke-width="1.5"/>
-                    <line x1="12.5" y1="4" x2="12.5" y2="16" stroke="#BDBDBD" stroke-width="1.5"/>
-                </svg>
-            </button>
-            <button data-layout="4">
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect x="3" y="4" width="14" height="12" rx="2" stroke="#BDBDBD" stroke-width="1.5"/>
-                    <line x1="10" y1="4" x2="10" y2="16" stroke="#BDBDBD" stroke-width="1.5"/>
-                    <line x1="3" y1="10" x2="17" y2="10" stroke="#BDBDBD" stroke-width="1.5"/>
-                </svg>
-            </button>
-        </div>
-        <input type="text" placeholder="Type your message..." id="user-input">
-        <button id="send-button" class="input-button">发送</button>
-    </div>
-</div>
+            <div class="input-container">
+                <div class="layout-buttons">
+                    <button data-layout="2" class="active">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="3" y="4" width="14" height="12" rx="2" stroke="#BDBDBD" stroke-width="1.5"/>
+                            <line x1="10" y1="4" x2="10" y2="16" stroke="#BDBDBD" stroke-width="1.5"/>
+                        </svg>
+                    </button>
+                    <button data-layout="3">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="3" y="4" width="14" height="12" rx="2" stroke="#BDBDBD" stroke-width="1.5"/>
+                            <line x1="7.5" y1="4" x2="7.5" y2="16" stroke="#BDBDBD" stroke-width="1.5"/>
+                            <line x1="12.5" y1="4" x2="12.5" y2="16" stroke="#BDBDBD" stroke-width="1.5"/>
+                        </svg>
+                    </button>
+                    <button data-layout="4">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="3" y="4" width="14" height="12" rx="2" stroke="#BDBDBD" stroke-width="1.5"/>
+                            <line x1="10" y1="4" x2="10" y2="16" stroke="#BDBDBD" stroke-width="1.5"/>
+                            <line x1="3" y1="10" x2="17" y2="10" stroke="#BDBDBD" stroke-width="1.5"/>
+                        </svg>
+                    </button>
+                </div>
+                <input type="text" placeholder="Type your message..." id="user-input">
+                <button id="send-button" class="input-button">发送</button>
+            </div>
         </div>
     </div>
 
     <script>
         // 获取DOM元素
-        const sidebarLinks = document.querySelectorAll('.sidebar nav a');
         const chatWindows = document.querySelector('.chat-windows');
         const layoutButtons = document.querySelectorAll('.layout-buttons button');
         const userInput = document.getElementById('user-input');
@@ -341,108 +310,119 @@
         const sidebar = document.querySelector('.sidebar');
         const sidebarToggle = document.getElementById('sidebar-toggle');
 
-       // 创建聊天窗口函数
+        // 动态生成模型列表
+        fetch('/models')
+            .then(response => response.json())
+            .then(data => {
+                const modelListElement = document.getElementById('model-list');
+                data.models.forEach(model => {
+                    const link = document.createElement('a');
+                    link.href = "#";
+                    link.dataset.mode = model;
+                    link.innerHTML = `<span>${model}</span>`;
+                    modelListElement.appendChild(link);
+                });
+                addSidebarLinkListeners();
+                initializeAllInOneMode();  // 初始化All-In-One模式
+            });
+
+        function addSidebarLinkListeners() {
+            const sidebarLinks = document.querySelectorAll('.sidebar nav a');
+            sidebarLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const mode = link.dataset.mode;
+                    sidebarLinks.forEach(link => link.classList.remove('active'));
+                    link.classList.add('active');
+
+                    if (mode === 'all-in-one') {
+                        layoutButtons.forEach(btn => btn.style.display = 'inline-block');
+                        toggleLayout(2);
+                    } else {
+                        layoutButtons.forEach(btn => btn.style.display = 'none');
+                        chatWindows.innerHTML = '';
+                        const chatWindow = createChatWindow([mode]);
+                        chatWindows.appendChild(chatWindow);
+                        chatWindows.style.gridTemplateColumns = '1fr';
+
+                        const chatBody = chatWindows.querySelector('.chat-body');
+                        chatBody.style.maxHeight = '65vh';
+                    }
+                });
+            });
+        }
+
+        function initializeAllInOneMode() {
+            const allInOneLink = document.querySelector('.sidebar nav a[data-mode="all-in-one"]');
+            if (allInOneLink) {
+                allInOneLink.click();
+            }
+        }
+
+        // 创建聊天窗口函数
         function createChatWindow(models) {
-    const chatWindow = document.createElement('div');
-    chatWindow.classList.add('chat-window');
+            const chatWindow = document.createElement('div');
+            chatWindow.classList.add('chat-window');
 
-    const chatHeader = document.createElement('div');
-    chatHeader.classList.add('chat-header');
-    const select = document.createElement('select');
-models.forEach(model => {
-    console.log('Model before trim:', model);
-    console.log('Sidebar link textContent before trim:', sidebarLinks[0].textContent);
+            const chatHeader = document.createElement('div');
+            chatHeader.classList.add('chat-header');
 
-    model = model.trim();
-    let sidebarText = sidebarLinks[0].textContent.trim();
+            const select = document.createElement('select');
+            models.forEach(model => {
+                model = model.trim();
+                const option = document.createElement('option');
+                option.value = model;
+                option.textContent = model;
+                select.appendChild(option);
+            });
 
-    console.log('Model after trim:', model);
-    console.log('Sidebar link textContent after trim:', sidebarText);
+            chatHeader.appendChild(select);
 
-    if (model !== sidebarText) {
-        const option = document.createElement('option');
-        option.value = model;
-        option.textContent = model;
-        select.appendChild(option);
-    }
-});
+            const chatBody = document.createElement('div');
+            chatBody.classList.add('chat-body');
 
+            chatWindow.appendChild(chatHeader);
+            chatWindow.appendChild(chatBody);
 
-    chatHeader.appendChild(select);
+            return chatWindow;
+        }
 
-    const chatBody = document.createElement('div');
-    chatBody.classList.add('chat-body');
+        function toggleLayout(layout) {
+            chatWindows.innerHTML = '';
+            layoutButtons.forEach(btn => btn.classList.remove('active'));
+            const activeBtn = document.querySelector(`.layout-buttons button[data-layout="${layout}"]`);
+            activeBtn.classList.add('active');
 
-    chatWindow.appendChild(chatHeader);
-    chatWindow.appendChild(chatBody);
+            let columns;
+            if (layout === 2 || layout === 3) {
+                columns = '1fr '.repeat(layout);
+            } else if (layout === 4) {
+                columns = '1fr 1fr';
+            }
+            chatWindows.style.gridTemplateColumns = columns.trim();
 
-    return chatWindow;
-}
+            const models = Array.from(document.querySelectorAll('.sidebar nav a')).map(link => link.dataset.mode).filter(model => model !== 'all-in-one');
 
+            for (let i = 0; i < layout; i++) {
+                const chatWindow = createChatWindow(models);
+                chatWindows.appendChild(chatWindow);
+            }
 
-       function toggleLayout(layout) {
-    chatWindows.innerHTML = '';
-    layoutButtons.forEach(btn => btn.classList.remove('active'));
-    const activeBtn = document.querySelector(`.layout-buttons button[data-layout="${layout}"]`);
-    activeBtn.classList.add('active');
-
-    let columns;
-    if (layout === 2 || layout === 3) {
-        columns = '1fr '.repeat(layout);
-    } else if (layout === 4) {
-        columns = '1fr 1fr';
-    }
-    chatWindows.style.gridTemplateColumns = columns;
-
-    const models = Array.from(sidebarLinks).map(link => link.textContent);
-
-    for (let i = 0; i < layout; i++) {
-        const chatWindow = createChatWindow(models);
-        chatWindows.appendChild(chatWindow);
-    }
-
-    // 根据布局方式添加不同的样式规则
-    if (layout === 4) {
-        const chatBodies = chatWindows.querySelectorAll('.chat-body');
-        chatBodies.forEach(chatBody => {
-            chatBody.style.maxHeight = '23.6vh';
-        });
-    } else {
-        const chatBodies = chatWindows.querySelectorAll('.chat-body');
-        chatBodies.forEach(chatBody => {
-            chatBody.style.maxHeight = '65vh';
-        });
-    }
-}
+            if (layout === 4) {
+                const chatBodies = chatWindows.querySelectorAll('.chat-body');
+                chatBodies.forEach(chatBody => {
+                    chatBody.style.maxHeight = '23.6vh';
+                });
+            } else {
+                const chatBodies = chatWindows.querySelectorAll('.chat-body');
+                chatBodies.forEach(chatBody => {
+                    chatBody.style.maxHeight = '65vh';
+                });
+            }
+        }
 
         // 初始化布局为 all-in-one 模式
         toggleLayout(2);
-
-// 监听侧边栏链接点击事件
-sidebarLinks.forEach(link => {
-    link.addEventListener('click', (e) => {
-        e.preventDefault();
-        const mode = e.target.dataset.mode;
-        sidebarLinks.forEach(link => link.classList.remove('active'));
-        e.target.classList.add('active');
-
-        if (mode === 'all-in-one') {
-            layoutButtons.forEach(btn => btn.style.display = 'inline-block');
-            toggleLayout(2);
-        } else {
-            layoutButtons.forEach(btn => btn.style.display = 'none');
-            chatWindows.innerHTML = '';
-            const chatWindow = createChatWindow([e.target.textContent]);
-            chatWindows.appendChild(chatWindow);
-            chatWindows.style.gridTemplateColumns = '1fr';
-
-            // 设置单一模型模式下的聊天窗口最大高度
-            const chatBody = chatWindows.querySelector('.chat-body');
-            chatBody.style.maxHeight = '65vh';
-        }
-    });
-});
-
 
         // 监听布局切换按钮点击事件
         layoutButtons.forEach(btn => {
@@ -452,78 +432,73 @@ sidebarLinks.forEach(link => {
             });
         });
 
-// 监听发送按钮点击事件
-sendButton.addEventListener('click', () => {
-    const userMessage = userInput.value.trim();
-    if (userMessage) {
-        // 获取所有聊天窗口的选中模型
-        const selectedModels = Array.from(document.querySelectorAll('.chat-window .chat-header select')).map(select => select.value);
-        console.log('Selected models:', selectedModels);
+        // 监听发送按钮点击事件
+        sendButton.addEventListener('click', () => {
+            const userMessage = userInput.value.trim();
+            if (userMessage) {
+                const selectedModels = Array.from(document.querySelectorAll('.chat-window .chat-header select')).map(select => select.value);
 
-        // 在聊天窗口中显示用户输入的消息气泡
-        const chatWindows = document.querySelectorAll('.chat-window .chat-body');
-        chatWindows.forEach(chatBody => {
-            const userMessageElement = document.createElement('div');
-            userMessageElement.classList.add('message', 'user-message');
-            userMessageElement.textContent = userMessage;
-            chatBody.appendChild(userMessageElement);
-// 自动滚动到底部
-    chatBody.scrollTop = chatBody.scrollHeight;
+                const chatWindows = document.querySelectorAll('.chat-window .chat-body');
+                chatWindows.forEach(chatBody => {
+                    const userMessageElement = document.createElement('div');
+                    userMessageElement.classList.add('message', 'user-message');
+                    userMessageElement.textContent = userMessage;
+                    chatBody.appendChild(userMessageElement);
+                    chatBody.scrollTop = chatBody.scrollHeight;
+                });
+
+                const loadingMessageElements = Array.from(document.querySelectorAll('.chat-window .chat-body')).map(chatBody => {
+                    const loadingMessage = document.createElement('div');
+                    loadingMessage.classList.add('message', 'loading-message');
+                    loadingMessage.textContent = 'Loading...';
+                    chatBody.appendChild(loadingMessage);
+                    return loadingMessage;
+                });
+
+                fetch('/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ userMessage, selectedModels })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    const chatWindows = document.querySelectorAll('.chat-window .chat-body');
+                    chatWindows.forEach((chatBody, index) => {
+                        const response = data.responses[index];
+                        const assistantMessageElement = document.createElement('div');
+                        assistantMessageElement.classList.add('message', 'assistant-message');
+                        const typingTextElement = document.createElement('span');
+                        typingTextElement.classList.add('typing-text');
+                        assistantMessageElement.appendChild(typingTextElement);
+                        chatBody.appendChild(assistantMessageElement);
+                        chatBody.removeChild(loadingMessageElements[index]);
+                        chatBody.scrollTop = chatBody.scrollHeight;
+
+                        // 添加打字机效果
+                        const text = response;
+                        let i = 0;
+                        const typingSpeed = 10; // 每 10 毫秒输出一个字符
+
+                        function typeText() {
+                            if (i < text.length) {
+                                typingTextElement.textContent += text.charAt(i);
+                                i++;
+                                setTimeout(typeText, typingSpeed);
+                            }
+                        }
+
+                        typeText();
+                    });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+
+                userInput.value = '';
+            }
         });
-
-        // 在聊天窗口中显示 "Loading..." 消息
-        const loadingMessageElements = Array.from(document.querySelectorAll('.chat-window .chat-body')).map(chatBody => {
-            const loadingMessage = document.createElement('div');
-            loadingMessage.classList.add('message', 'loading-message');
-            loadingMessage.textContent = 'Loading...';
-            chatBody.appendChild(loadingMessage);
-            return loadingMessage;
-        });
-
-        // 发送请求到后端并获取响应
-        fetch('/chat', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ userMessage, selectedModels })
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log('Received response:', data);
-            // 将后端返回的响应逐个字符更新到对应的聊天窗口中
-            const chatWindows = document.querySelectorAll('.chat-window .chat-body');
-            chatWindows.forEach((chatBody, index) => {
-                const response = data.responses[index];
-                const assistantMessageElement = document.createElement('div');
-                assistantMessageElement.classList.add('message', 'assistant-message');
-                chatBody.appendChild(assistantMessageElement);
-
-                // 逐个字符添加文本，实现打字机效果
-                let i = 0;
-                const typingInterval = setInterval(() => {
-                    if (i < response.length) {
-                        assistantMessageElement.textContent += response[i];
-                        i++;
-                    } else {
-                        clearInterval(typingInterval);
-                    }
-                },25); // 设置间隔时间为25毫秒
-
-                // 移除 "Loading..." 消息
-                const loadingMessage = loadingMessageElements[index];
-                chatBody.removeChild(loadingMessage);
- // 自动滚动到底部
-        chatBody.scrollTop = chatBody.scrollHeight;
-            });
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
-
-        userInput.value = '';
-    }
-});
 
         // 监听侧边栏收起/展开按钮点击事件
         sidebarToggle.addEventListener('click', () => {
@@ -535,7 +510,6 @@ sendButton.addEventListener('click', () => {
                 sendButton.click();
             }
         });
-
-   </script>
+    </script>
 </body>
 </html>
