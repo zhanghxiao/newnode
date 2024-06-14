@@ -2,6 +2,10 @@ import { createServer } from 'http';
 import OpenAI from 'openai';
 import 'dotenv/config';
 import { createReadStream } from 'fs';
+import * as dotenv from 'dotenv';
+dotenv.config();
+
+const modelList = process.env.MODEL_LIST?.split(';') || [];
 
 const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
@@ -22,7 +26,15 @@ createServer(async (req, res) => {
 
     if (url.pathname === '/') {
         // 首页路由，返回 index.html
+        res.writeHead(200, { 'Content-Type': 'text/html' });
         createReadStream('./index.html').pipe(res);
+        return;
+    }
+
+    if (url.pathname === '/models') {
+        // 返回模型列表
+        res.setHeader('Content-Type', 'application/json');
+        res.end(JSON.stringify({ models: modelList }));
         return;
     }
 
@@ -50,27 +62,22 @@ createServer(async (req, res) => {
                 return;
             }
 
-            const responses = await Promise.all(selectedModels.map(async (model: string) => {
-                console.log(`Sending request to model ${model} with prompt: ${userMessage}`);
-                const gptStream = await openai.chat.completions.create({
-                    model,
-                    messages: [{ role: 'user', content: userMessage }],
-                    stream: true,
-                });
-
-                let assistantMessage = '';
-
-                for await (const chunk of gptStream) {
-                    console.log('Received chunk:', chunk);
-                    if (chunk.choices && chunk.choices[0].delta.content) {
-                        assistantMessage += chunk.choices[0].delta.content;
-                    }
+            // 并行发送请求到不同的模型
+            const responses = await Promise.all(selectedModels.map(async (model) => {
+                try {
+                    console.log(`Sending request to model ${model} with prompt: ${userMessage}`);
+                    const gptResponse = await openai.chat.completions.create({
+                        model,
+                        messages: [{ role: 'user', content: userMessage }],
+                    });
+                    return gptResponse.choices[0].message.content;
+                } catch (error) {
+                    console.error(`Error with model ${model}:`, error);
+                    return `Error with model ${model}`;
                 }
-
-                return assistantMessage;
             }));
 
-            res.statusCode = 200;
+            // 返回所有模型的响应
             res.setHeader('Content-Type', 'application/json');
             res.end(JSON.stringify({ responses }));
         } catch (error) {
@@ -80,8 +87,8 @@ createServer(async (req, res) => {
         }
     } else {
         res.statusCode = 404;
-        res.end('Not found');
+        res.end('Not Found');
     }
-}).listen(port);
-
-console.log(`Server running at http://localhost:${port}/`);
+}).listen(port, () => {
+    console.log(`Server is running on http://localhost:${port}`);
+});
